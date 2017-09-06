@@ -9,8 +9,12 @@ export default class App extends React.Component {
     assetsAreLoaded: false,
   };
 
-  componentWillMount() {
+  async componentWillMount() {
     this._loadAssetsAsync();
+    await Expo.Font.loadAsync({
+      'Roboto': require('native-base/Fonts/Roboto.ttf'),
+      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+    });
   }
 
   render() {
@@ -20,8 +24,7 @@ export default class App extends React.Component {
       return (
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          {Platform.OS === 'android' &&
-            <View style={styles.statusBarUnderlay} />}
+          {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
           <RootNavigation />
         </View>
       );
@@ -60,10 +63,10 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#21252b',
   },
   statusBarUnderlay: {
     height: 24,
-    backgroundColor: 'rgba(0,0,0,0.2)',
+    backgroundColor: '#21252b',
   },
 });
