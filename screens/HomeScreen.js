@@ -1,12 +1,10 @@
 import React from 'react';
-import { Image, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { WebBrowser } from 'expo';
+import { Platform, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+//import { WebBrowser } from 'expo';
+//import { MonoText } from '../components/StyledText';
 
-import { MonoText } from '../components/StyledText';
-
-import {
+/*import {
   Container,
-  Header,
   Content,
   List,
   ListItem,
@@ -27,240 +25,164 @@ import {
   TabHeading,
   Card,
   CardItem,
-} from 'native-base';
-
-import { Col, Row, Grid } from 'react-native-easy-grid';
+} from 'native-base';*/
+import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Text, Card, CardItem, Item, Input, Thumbnail, List, ListItem } from 'native-base';
 
 export default class HomeScreen extends React.Component {
-  static navigationOptions = {
+  /*static navigationOptions = {
     header: null,
-  };
+  };*/
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
+      dataSource: []
+    }
+  }
+
+  componentDidMount() {
+    return fetch('https://api.coinmarketcap.com/v1/ticker/?convert=THB&limit=20')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({ isLoading: false, dataSource: responseJson });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
 
   render() {
     return (
       <Container>
 
-        <Header style={{ backgroundColor: '#21252b' }}>
+        <Header backgroundColor='#d7dae0'>
           <Left>
             <Button transparent>
               <Icon name='menu' />
             </Button>
           </Left>
           <Body>
-            <Title>Header</Title>
+            <Title>THBCrypto</Title>
           </Body>
           <Right />
         </Header>
 
-        <Header>
+        <Header backgroundColor='#d7dae0'>
           <Card>
-            <CardItem>
+            <CardItem bordered={true}>
               <Body>
                 <Text>
-                //Your text here
+                  12345
+                5456465
                 </Text>
               </Body>
             </CardItem>
           </Card>
         </Header>
 
-        <Content style={{ backgroundColor: '#282c34' }}>
+        <Icon name='home' /><Text>Asia              Thailand</Text>
 
+        <Header searchBar rounded backgroundColor='#d7dae0'>
+          <Item>
+            <Icon name="ios-search" />
+            <Input placeholder="Search" />
+            <Icon name="ios-people" />
+          </Item>
+          <Button transparent>
+            <Text>Search</Text>
+          </Button>
+        </Header>
 
-          <Card>
+        <Content>
 
-            <Header searchBar rounded>
-              <Item>
-                <Icon name="ios-search" />
-                <Input placeholder="Search" />
-                <Icon name="ios-people" />
-              </Item>
-              <Button transparent>
-                <Text>Search</Text>
-              </Button>
-            </Header>
-
+          <ScrollView>
             <List>
-              <ListItem avatar>
-                <Left>
-                  <Thumbnail source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/128x128/ripple.png' }} />
-                </Left>
-                <Body>
-                  <Text>Kumar Pratik</Text>
-                  <Text note>Doing what you like will always keep you happy . .</Text>
-                </Body>
-                <Right>
-                  <Text note>3:43 pm</Text>
-                </Right>
-              </ListItem>
+              {
+                this.state.dataSource.map((u, i) => {
+                  return (
+                    <ListItem avatar key={i}>
+                      <Left>
+                        <Thumbnail source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/128x128/' + u.id + '.png' }} />
+                      </Left>
+                      <Body>
+                        <Text style={{ fontSize: 20 }}>{u.symbol}</Text>
+                        <Text note>{u.name}</Text>
+                      </Body>
+                      <Right>
+                        <Text style={{ fontSize: 20 }}>{parseFloat(u.price_thb).toFixed(2)+' ฿'}</Text>
+                        <Text note>{parseFloat(u.price_usd).toFixed(2)+' $'}</Text>
+                      </Right>
+                      <Right>
+                        {
+                          u.percent_change_1h < 0 ?
+                            (
+                              <Button style={{backgroundColor: '#d7484c'}}><Text style={{ fontSize: 15 }}>{u.percent_change_1h + ' %'}</Text></Button>
+                            ) : (
+                              <Button style={{backgroundColor: '#7fe2ae'}}><Text style={{ fontSize: 15 }}>{u.percent_change_1h + ' %'}</Text></Button>
+                            )
+                        }
+                      </Right>
+                    </ListItem>
+                  );
+                })
+              }
             </List>
-
-            <List>
-              <ListItem avatar>
-                <Left>
-                  <Thumbnail source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/128x128/ripple.png' }} />
-                </Left>
-                <Body>
-                  <Text>Kumar Pratik</Text>
-                  <Text note>Doing what you like will always keep you happy . .</Text>
-                </Body>
-                <Right>
-                  <Text note>3:43 pm</Text>
-                </Right>
-              </ListItem>
-            </List>
-
-            <List>
-              <ListItem avatar>
-                <Left>
-                  <Thumbnail source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/128x128/ripple.png' }} />
-                </Left>
-                <Body>
-                  <Text>Kumar Pratik</Text>
-                  <Text note>Doing what you like will always keep you happy . .</Text>
-                </Body>
-                <Right>
-                  <Text note>3:43 pm</Text>
-                </Right>
-              </ListItem>
-            </List>
-
-            <List>
-              <ListItem avatar>
-                <Left>
-                  <Thumbnail source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/128x128/ripple.png' }} />
-                </Left>
-                <Body>
-                  <Text>Kumar Pratik</Text>
-                  <Text note>Doing what you like will always keep you happy . .</Text>
-                </Body>
-                <Right>
-                  <Text note>3:43 pm</Text>
-                </Right>
-              </ListItem>
-            </List>
-
-            <List>
-              <ListItem avatar>
-                <Left>
-                  <Thumbnail source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/128x128/ripple.png' }} />
-                </Left>
-                <Body>
-                  <Text>Kumar Pratik</Text>
-                  <Text note>Doing what you like will always keep you happy . .</Text>
-                </Body>
-                <Right>
-                  <Text note>3:43 pm</Text>
-                </Right>
-              </ListItem>
-            </List>
-
-            <List>
-              <ListItem avatar>
-                <Left>
-                  <Thumbnail source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/128x128/ripple.png' }} />
-                </Left>
-                <Body>
-                  <Text>Kumar Pratik</Text>
-                  <Text note>Doing what you like will always keep you happy . .</Text>
-                </Body>
-                <Right>
-                  <Text note>3:43 pm</Text>
-                </Right>
-              </ListItem>
-            </List>
-
-            <List>
-              <ListItem avatar>
-                <Left>
-                  <Thumbnail source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/128x128/ripple.png' }} />
-                </Left>
-                <Body>
-                  <Text>Kumar Pratik</Text>
-                  <Text note>Doing what you like will always keep you happy . .</Text>
-                </Body>
-                <Right>
-                  <Text note>3:43 pm</Text>
-                </Right>
-              </ListItem>
-            </List>
-
-            <List>
-              <ListItem avatar>
-                <Left>
-                  <Thumbnail source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/128x128/ripple.png' }} />
-                </Left>
-                <Body>
-                  <Text>Kumar Pratik</Text>
-                  <Text note>Doing what you like will always keep you happy . .</Text>
-                </Body>
-                <Right>
-                  <Text note>3:43 pm</Text>
-                </Right>
-              </ListItem>
-            </List>
-
-            <List>
-              <ListItem avatar>
-                <Left>
-                  <Thumbnail source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/128x128/ripple.png' }} />
-                </Left>
-                <Body>
-                  <Text>Kumar Pratik</Text>
-                  <Text note>Doing what you like will always keep you happy . .</Text>
-                </Body>
-                <Right>
-                  <Text note>3:43 pm</Text>
-                </Right>
-              </ListItem>
-            </List>
-
-            <List>
-              <ListItem avatar>
-                <Left>
-                  <Thumbnail source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/128x128/ripple.png' }} />
-                </Left>
-                <Body>
-                  <Text>Kumar Pratik</Text>
-                  <Text note>Doing what you like will always keep you happy . .</Text>
-                </Body>
-                <Right>
-                  <Text note>3:43 pm</Text>
-                </Right>
-              </ListItem>
-            </List>
-
-            <List>
-              <ListItem avatar>
-                <Left>
-                  <Thumbnail source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/128x128/ripple.png' }} />
-                </Left>
-                <Body>
-                  <Text>Kumar Pratik</Text>
-                  <Text note>Doing what you like will always keep you happy . .</Text>
-                </Body>
-                <Right>
-                  <Text note>3:43 pm</Text>
-                </Right>
-              </ListItem>
-            </List>
-            
-
-          </Card>
+          </ScrollView>
 
         </Content>
 
         <Footer>
           <FooterTab>
-            <Button full style={{ backgroundColor: '#21252b' }}>
-              <Text>Footer</Text>
-            </Button>
+
           </FooterTab>
         </Footer>
 
       </Container>
 
-      //   <View style={styles.container}>
+      /*<View>
+      <Header
+        backgroundColor='#6ccdcf'
+        leftComponent={{ icon: 'menu', color: '#ffffff' }}
+        centerComponent={{ text: 'THBCrypto', style: { color: '#ffffff' } }}
+      />
+
+      <Card containerStyle={{ marginTop: 85 }}>
+
+      </Card>
+
+      <Card containerStyle={{ padding: 0 }}>
+        <SearchBar containerStyle={{ backgroundColor: '#ffffff' }}
+          lightTheme
+          round
+          placeholder='Search Symbol...' />
+        <ScrollView>
+          {
+            users.map((u, i) => {
+              return (
+                <ListItem
+                  key={i}
+                  roundAvatar
+                  title={u.name}
+                  avatar={{ uri: u.avatar }}
+                />
+              );
+            })
+          }
+        </ScrollView>
+      </Card>
+
+
+      <Button
+        large raised
+        icon={{ name: 'envira', type: 'font-awesome' }}
+        title='LARGE WITH RIGHT ICON' />
+
+
+
+    </View>*/
+
+
+      /*   <View style={styles.container}>
       //   <ScrollView
       //     style={styles.container}
       //     contentContainerStyle={styles.contentContainer}>
@@ -318,11 +240,11 @@ export default class HomeScreen extends React.Component {
       //       </MonoText>
       //     </View>
       //   </View>
-      // </View>
+      // </View>*/
     );
   }
 
-  _maybeRenderDevelopmentModeWarning() {
+  /*_maybeRenderDevelopmentModeWarning() {
     if (__DEV__) {
       const learnMoreButton = (
         <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
@@ -343,9 +265,9 @@ export default class HomeScreen extends React.Component {
         </Text>
       );
     }
-  }
+  }*/
 
-  _handleLearnMorePress = () => {
+  /*_handleLearnMorePress = () => {
     WebBrowser.openBrowserAsync(
       'https://docs.expo.io/versions/latest/guides/development-mode'
     );
@@ -355,24 +277,13 @@ export default class HomeScreen extends React.Component {
     WebBrowser.openBrowserAsync(
       'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
     );
-  };
-
-  getTickerFromApiAsync = () => {
-    return fetch('https://api.coinmarketcap.com/v1/ticker/?convert=THB&limit=10')
-      .then((response) => response.json())
-      .then((responseJson) => {
-        return responseJson;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+  };*/
 }
 
-const styles = StyleSheet.create({
+/*const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#282c34',
+    backgroundColor: '#ffffff',
   },
   developmentModeText: {
     marginBottom: 20,
@@ -456,4 +367,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#2e78b7',
   },
-});
+});*/
