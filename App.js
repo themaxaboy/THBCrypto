@@ -11,10 +11,6 @@ export default class App extends React.Component {
 
   async componentWillMount() {
     this._loadAssetsAsync();
-    await Expo.Font.loadAsync({
-      'Roboto': require('native-base/Fonts/Roboto.ttf'),
-      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
-    });
   }
 
   render() {
@@ -32,6 +28,11 @@ export default class App extends React.Component {
   }
 
   async _loadAssetsAsync() {
+    await Expo.Font.loadAsync({
+      'Roboto': require('native-base/Fonts/Roboto.ttf'),
+      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+    });
+    
     try {
       await Promise.all([
         Asset.loadAsync([
