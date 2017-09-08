@@ -26,7 +26,9 @@ import { Platform, ScrollView, StyleSheet, TouchableOpacity } from 'react-native
   Card,
   CardItem,
 } from 'native-base';*/
-import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Text, Card, CardItem, Item, Input, Thumbnail, List, ListItem } from 'native-base';
+import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Text, Item, Input, Thumbnail, List, ListItem } from 'native-base';
+import { responsiveHeight, responsiveWidth, responsiveFontSize } from 'react-native-responsive-dimensions';
+import { Col, Row, Grid } from 'react-native-easy-grid';
 
 export default class HomeScreen extends React.Component {
   /*static navigationOptions = {
@@ -240,7 +242,7 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     this.timer = setInterval(() => this.fetchglobal(), 60000)
-    this.timer = setInterval(() => this.fetchTicker(), 5000)
+    this.timer = setInterval(() => this.fetchTicker(), 10000)
   }
 
   fetchglobal = () => {
@@ -269,109 +271,113 @@ export default class HomeScreen extends React.Component {
     return (
       <Container>
 
-        <Header style={{ backgroundColor: '#6ccdcf', height: 40 }}>
+        <Header style={{ backgroundColor: '#6ccdcf', height: responsiveHeight(7) }}>
           <Left>
             <Button transparent>
               <Icon name='menu' />
             </Button>
           </Left>
           <Body>
-            <Title style={{ fontWeight: '400' }}>THBCrypto Market Cap.</Title>
+            <Title style={{ fontSize: responsiveFontSize(1.5), fontWeight: '400' }}>THBCrypto Market Cap.</Title>
           </Body>
           <Right />
         </Header>
 
-        <Header style={{ backgroundColor: '#ffffff' }}>
-          <Left>
-            <Text style={{ fontSize: 20 }}>Market Cap</Text>
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }} note>{(this.state.global.total_market_cap_thb).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ฿'}</Text>
-          </Left>
-          <Left>
-            <Text style={{ fontSize: 20 }}>24h Volume</Text>
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }} note>{(this.state.global.total_24h_volume_thb).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ฿'}</Text>
-          </Left>
-          <Left>
-            <Text style={{ fontSize: 20 }}>BTC Dominance</Text>
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }} note>{parseFloat(this.state.global.bitcoin_percentage_of_market_cap).toFixed(2) + '%'}</Text>
-          </Left>
-        </Header>
+        <Grid>
 
-        <Header style={{ backgroundColor: '#ffffff' }}>
-          <Left>
-            <Icon name='md-globe' style={{ color: '#ababab' }} />
-          </Left>
-          <Body>
-            <Text style={{ fontSize: 20, color: '#4bb8f2', fontWeight: 'bold' }}>Asia</Text>
-          </Body>
-          <Right>
-            <Text style={{ fontSize: 20, color: '#4bb8f2', fontWeight: 'bold' }}>Thailand</Text>
-          </Right>
-        </Header>
+          <Row style={{ backgroundColor: '#ffffff', height: responsiveHeight(6) }}>
+            <Col>
+              <Text style={{ fontSize: responsiveFontSize(1.8), textAlign: 'center', textAlignVertical: 'center' }}>Market Cap</Text>
+              <Text style={{ fontSize: responsiveFontSize(1.5), fontWeight: 'bold', textAlign: 'center', textAlignVertical: 'center' }} note>{parseFloat((this.state.global.total_market_cap_thb) / 1000000).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' M฿'}</Text>
+            </Col>
+            <Col>
+              <Text style={{ fontSize: responsiveFontSize(1.8), textAlign: 'center', textAlignVertical: 'center' }}>24h Volume</Text>
+              <Text style={{ fontSize: responsiveFontSize(1.5), textAlign: 'center', textAlignVertical: 'center', fontWeight: 'bold' }} note>{parseFloat(this.state.global.total_24h_volume_thb / 1000000).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' M฿'}</Text>
+            </Col>
+            <Col>
+              <Text style={{ fontSize: responsiveFontSize(1.8), textAlign: 'center', textAlignVertical: 'center' }}>BTC Dominance</Text>
+              <Text style={{ fontSize: responsiveFontSize(1.5), textAlign: 'center', textAlignVertical: 'center', fontWeight: 'bold' }} note>{parseFloat(this.state.global.bitcoin_percentage_of_market_cap).toFixed(2) + '%'}</Text>
+            </Col>
+          </Row>
 
-        <Header searchBar rounded style={{ backgroundColor: '#ffffff' }}>
-          <Item>
-            <Icon name="ios-search" />
-            <Input placeholder="Search" />
-            <Icon name="ios-trending-up" />
-          </Item>
-          <Button transparent>
-            <Text>Search</Text>
-          </Button>
-        </Header>
+          <Row style={{ backgroundColor: '#ffffff', height: responsiveHeight(4.5) }}>
+            <Col>
+              <Icon name='md-globe' style={{ color: '#ababab', paddingLeft:responsiveHeight(2) }} />
+            </Col>
+            <Col>
+              <Text style={{ fontSize: responsiveFontSize(2), color: '#4bb8f2', fontWeight: 'bold', textAlign: 'center', textAlignVertical: 'center' }}>Asia</Text>
+            </Col>
+            <Col>
+              <Text style={{ fontSize: responsiveFontSize(2), color: '#4bb8f2', fontWeight: 'bold', textAlign: 'center', textAlignVertical: 'center' }}>Thailand</Text>
+            </Col>
+          </Row>
 
-        <Content>
-          <ScrollView>
-            <List>
-              {
-                this.state.ticker.map((u, i) => {
-                  return (
-                    <ListItem avatar key={i}>
-                      <Left>
-                        <Thumbnail source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/128x128/' + u.id + '.png' }} />
-                      </Left>
-                      <Body>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{u.symbol}</Text>
-                        <Text note>{u.name}</Text>
-                      </Body>
-                      <Right>
-                        <Text note style={{ fontSize: 20, fontWeight: '400' }}>{parseFloat(u.price_thb).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ฿'}</Text>
-                        <Text note>{parseFloat(u.price_usd).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' $'}</Text>
-                      </Right>
-                      <Right>
-                        {
-                          u.percent_change_1h < 0 ?
-                            (
-                              <Button style={{ backgroundColor: '#d7484c' }}>
-                                <Text style={{ fontSize: 15, fontWeight: 'bold', textAlign: 'center', width: 60 }}>
-                                  {parseFloat(u.percent_change_1h).toFixed(2).replace("-", "") + '%'}
-                                </Text>
-                              </Button>
-                            ) : (
-                              <Button style={{ backgroundColor: '#7fe2ae' }}>
-                                <Text style={{ fontSize: 15, fontWeight: 'bold', textAlign: 'center', width: 60 }}>
-                                  {parseFloat(u.percent_change_1h).toFixed(2) + '%'}
-                                </Text>
-                              </Button>
-                            )
-                        }
-                      </Right>
-                    </ListItem>
-                  );
-                })
-              }
-            </List>
-          </ScrollView>
+          <Header searchBar rounded style={{ backgroundColor: '#ffffff', height: responsiveHeight(7.5) }}>
+            <Item>
+              <Icon name="ios-search" />
+              <Input placeholder="Search" />
+              <Icon name="ios-trending-up" />
+            </Item>
+            <Button transparent>
+              <Text>Search</Text>
+            </Button>
+          </Header>
 
-        </Content>
+          <Row>
+            <Content>
+              <ScrollView>
+                <List>
+                  {
+                    this.state.ticker.map((u, i) => {
+                      return (
+                        <ListItem avatar key={i} style={{ padding: 1 }}>
+                          <Left>
+                            <Thumbnail style={{ width: responsiveWidth(12), height: responsiveWidth(12) }} source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/128x128/' + u.id + '.png' }} />
+                          </Left>
+                          <Body>
+                            <Text style={{ fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>{u.symbol}</Text>
+                            <Text note>{u.name}</Text>
+                          </Body>
+                          <Right>
+                            <Text style={{ fontSize: responsiveFontSize(2), fontWeight: 'bold', color: '#ababab' }}>{parseFloat(u.price_thb).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ฿'}</Text>
+                            <Text note>{parseFloat(u.price_usd).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' $'}</Text>
+                          </Right>
+                          <Right>
+                            {
+                              u.percent_change_24h < 0 ?
+                                (
+                                  <Button style={{ backgroundColor: '#d7484c', height: responsiveHeight(5) }}>
+                                    <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', textAlign: 'center', width: responsiveWidth(14) }}>
+                                      {parseFloat(u.percent_change_24h).toFixed(2).replace("-", "") + '%'}
+                                    </Text>
+                                  </Button>
+                                ) : (
+                                  <Button style={{ backgroundColor: '#7fe2ae', height: responsiveHeight(5) }}>
+                                    <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', textAlign: 'center', width: responsiveWidth(14) }}>
+                                      {parseFloat(u.percent_change_24h).toFixed(2) + '%'}
+                                    </Text>
+                                  </Button>
+                                )
+                            }
+                          </Right>
+                        </ListItem>
+                      );
+                    })
+                  }
+                </List>
+              </ScrollView>
+            </Content>
+          </Row>
+        </Grid>
 
-        <Footer style={{ backgroundColor: '#ffffff', height: 80 }}>
+        <Footer style={{ backgroundColor: '#ffffff', height: responsiveHeight(10) }}>
           <FooterTab style={{ backgroundColor: '#ffffff', position: "absolute", top: 0, bottom: 0, left: 0, right: 0, padding: 15 }}>
             <Button bordered info>
-              <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Sell</Text>
+              <Text style={{ fontSize: responsiveFontSize(1.5), fontWeight: 'bold' }}>Sell</Text>
             </Button>
 
             <Button info>
-              <Text style={{ fontSize: 15, fontWeight: 'bold', color: '#ffffff' }}>Buy</Text>
+              <Text style={{ fontSize: responsiveFontSize(1.5), fontWeight: 'bold', color: '#ffffff' }}>Buy</Text>
             </Button>
 
           </FooterTab>
