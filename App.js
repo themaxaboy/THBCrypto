@@ -1,9 +1,9 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { AppLoading, Asset, Font } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from './screens/HomeScreen';
+import RootNavigation from './navigation/RootNavigation';
 
 export default class App extends React.Component {
   state = {
@@ -37,8 +37,7 @@ export default class App extends React.Component {
     try {
       await Promise.all([
         Asset.loadAsync([
-          require('./assets/images/robot-dev.png'),
-          require('./assets/images/robot-prod.png')
+          require('./assets/images/app-icon.png')
         ]),
         Font.loadAsync([
           // This is the font that we are using for our tab bar

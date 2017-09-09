@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View, Image } from 'react-native';
+import { ScrollView, RefreshControl, StyleSheet, View, Image } from 'react-native';
 import { Container, Header, Title, Content, Footer, Button, Left, Right, Body, Icon, Text, Item, Input, Thumbnail, List, ListItem, Drawer } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { responsiveHeight, responsiveWidth, responsiveFontSize } from 'react-native-responsive-dimensions';
@@ -13,6 +13,8 @@ export default class HomeScreen extends React.Component {
       "total_24h_volume_thb": 0
     },
     tickerShow: [],
+    refreshing: false,
+    searchInput:''
   }
 
   render() {
@@ -42,6 +44,8 @@ export default class HomeScreen extends React.Component {
         <Drawer
           ref={(ref) => { this.drawer = ref; }}
           content={<DrawerBar />}
+          side="left"
+          panCloseMask={0.2}
           onClose={() => this.closeDrawer()} >
           <Grid>
 
@@ -68,11 +72,12 @@ export default class HomeScreen extends React.Component {
               </Col>
             </Row>
 
-            <Header searchBar rounded style={{ paddingLeft: responsiveWidth(1), borderColor: '#ffffff', backgroundColor: '#ffffff', height: responsiveHeight(6), marginTop: responsiveHeight(-1.2) }}>
+            <Header noShadow searchBar rounded style={{ paddingLeft: responsiveWidth(1), borderColor: '#ffffff', backgroundColor: '#ffffff', height: responsiveHeight(6), marginTop: responsiveHeight(-1.2) }}>
               <Item>
                 <Icon name="ios-search" style={{ fontSize: responsiveFontSize(2), color: '#ababab' }} />
                 <Input placeholder="Search" style={{ fontSize: responsiveFontSize(1.8) }}
                   onChangeText={(text) => {
+                    this.setState({searchInput:text})
                     this.updateTickerShow(text);
                   }
                   } />
@@ -86,56 +91,54 @@ export default class HomeScreen extends React.Component {
             <Row>
               <Content>
                 <ScrollView>
-                  <List>
-                    {
-                      this.state.tickerShow.map((u, i) => {
-                        return (
-                          <ListItem key={i} avatar style={{ padding: 0 }}>
-                            <Left>
-                              <Thumbnail square style={{ width: responsiveWidth(10), height: responsiveWidth(10) }} source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/64x64/' + u.id + '.png' }} />
-                            </Left>
-                            <Body>
-                              <Grid>
-                                <Row>
-                                  <Text style={{ fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>{u.symbol}</Text>
-                                  {
-                                    u.percent_change_24h < 0 ? (
-                                      <Col><Text style={{ color: '#d7484c', fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>▼</Text></Col>
-                                    ) : (
-                                        <Col><Text style={{ color: '#7fe2ae', fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>▲</Text></Col>
-                                      )
-                                  }
-                                </Row>
-                              </Grid>
-                              <Text note style={{ fontSize: responsiveFontSize(1.5) }}>{u.name}</Text>
-                            </Body>
-                            <Right>
-                              <Text style={{ fontSize: responsiveFontSize(2), fontWeight: 'bold', color: '#ababab' }}>{parseFloat(u.price_thb).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ฿'}</Text>
-                              <Text note style={{ fontSize: responsiveFontSize(1.5) }}>{parseFloat(u.price_usd).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' $'}</Text>
-                            </Right>
-                            <Right>
+                  <List
+                    dataArray={this.state.tickerShow}
+                    refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh.bind(this)} />}
+                    renderRow={(data) =>
+                      <ListItem avatar style={{ padding: 0 }}>
+                        <Left>
+                          <Thumbnail square style={{ width: responsiveWidth(10), height: responsiveWidth(10) }} source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/64x64/' + data.id + '.png' }} />
+                        </Left>
+                        <Body>
+                          <Grid>
+                            <Row>
+                              <Text style={{ fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>{data.symbol}</Text>
                               {
-                                u.percent_change_24h < 0 ?
-                                  (
-                                    <Button style={{ backgroundColor: '#d7484c', height: responsiveHeight(5) }}>
-                                      <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', textAlign: 'center', width: responsiveWidth(14) }}>
-                                        {parseFloat(u.percent_change_24h).toFixed(2).replace("-", "") + '%'}
-                                      </Text>
-                                    </Button>
-                                  ) : (
-                                    <Button style={{ backgroundColor: '#7fe2ae', height: responsiveHeight(5) }}>
-                                      <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', textAlign: 'center', width: responsiveWidth(14) }}>
-                                        {parseFloat(u.percent_change_24h).toFixed(2) + '%'}
-                                      </Text>
-                                    </Button>
+                                data.percent_change_24h < 0 ? (
+                                  <Col><Text style={{ color: '#d7484c', fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>▼</Text></Col>
+                                ) : (
+                                    <Col><Text style={{ color: '#7fe2ae', fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>▲</Text></Col>
                                   )
                               }
-                            </Right>
-                          </ListItem>
-                        );
-                      })
+                            </Row>
+                          </Grid>
+                          <Text note style={{ fontSize: responsiveFontSize(1.5) }}>{data.name}</Text>
+                        </Body>
+                        <Right>
+                          <Text style={{ fontSize: responsiveFontSize(2), fontWeight: 'bold', color: '#ababab' }}>{parseFloat(data.price_thb).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ฿'}</Text>
+                          <Text note style={{ fontSize: responsiveFontSize(1.5) }}>{parseFloat(data.price_usd).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' $'}</Text>
+                        </Right>
+                        <Right>
+                          {
+                            data.percent_change_24h < 0 ?
+                              (
+                                <Button style={{ backgroundColor: '#d7484c', height: responsiveHeight(5) }}>
+                                  <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', textAlign: 'center', width: responsiveWidth(14) }}>
+                                    {parseFloat(data.percent_change_24h).toFixed(2).replace("-", "") + '%'}
+                                  </Text>
+                                </Button>
+                              ) : (
+                                <Button style={{ backgroundColor: '#7fe2ae', height: responsiveHeight(5) }}>
+                                  <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', textAlign: 'center', width: responsiveWidth(14) }}>
+                                    {parseFloat(data.percent_change_24h).toFixed(2) + '%'}
+                                  </Text>
+                                </Button>
+                              )
+                          }
+                        </Right>
+                      </ListItem>
                     }
-                  </List>
+                  />
                 </ScrollView>
               </Content>
             </Row>
@@ -155,6 +158,7 @@ export default class HomeScreen extends React.Component {
               </Col>
             </Grid>
           </Footer>
+
         </Drawer>
       </Container>
 
@@ -267,13 +271,14 @@ export default class HomeScreen extends React.Component {
   }
 
   componentDidMount() {
-    setInterval(() => this.fetchglobal(), 60000)
-    setInterval(() => this.fetchTicker(10), 20000)
+    this.timer = setInterval(() => this.fetchglobal(), 60000)
+    this.timer = setInterval(() => this.fetchTicker(0), 20000)
   }
 
   componentWillMount() {
     this.fetchglobal()
-    this.fetchTicker(5)
+    this.fetchTicker(0)
+    this.updateTickerShow();
   }
 
   fetchglobal = () => {
@@ -298,7 +303,7 @@ export default class HomeScreen extends React.Component {
         this.setState({
           ticker: responseJson
         }, function () {
-          this.updateTickerShow();
+          this.updateTickerShow(this.state.searchInput);
         });
       })
       .catch((error) => {
@@ -311,8 +316,7 @@ export default class HomeScreen extends React.Component {
 
     if (inputText == '') {
       this.setState({ tickerShow: this.state.ticker });
-    }
-    else {
+    } else {
       for (var i = 0; i < (this.state.ticker).length; i++) {
         if ((this.state.ticker[i].symbol).includes(inputText.toUpperCase())) {
           filtered.push(this.state.ticker[i]);
@@ -321,6 +325,14 @@ export default class HomeScreen extends React.Component {
       this.setState({ tickerShow: filtered });
     }
   };
+
+  _onRefresh = () => {
+    this.setState({ refreshing: true });
+    this.fetchTicker(100).then(() => {
+      this.setState({ refreshing: false });
+    });
+  }
+
 
   closeDrawer = () => {
     this.drawer._root.close()
