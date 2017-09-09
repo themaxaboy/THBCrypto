@@ -1,5 +1,6 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { AppLoading, Asset, Font } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from './screens/HomeScreen';
@@ -19,7 +20,7 @@ export default class App extends React.Component {
     } else {
       return (
         <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+          {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
           {Platform.OS === 'android' && <View style={styles.statusBarUnderlay} />}
           <HomeScreen />
         </View>
@@ -30,21 +31,21 @@ export default class App extends React.Component {
   async _loadAssetsAsync() {
     await Expo.Font.loadAsync({
       'Roboto': require('native-base/Fonts/Roboto.ttf'),
-      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
+      'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf')
     });
     
     try {
       await Promise.all([
         Asset.loadAsync([
           require('./assets/images/robot-dev.png'),
-          require('./assets/images/robot-prod.png'),
+          require('./assets/images/robot-prod.png')
         ]),
         Font.loadAsync([
           // This is the font that we are using for our tab bar
-          Ionicons.font,
+          Ionicons.font
           // We include SpaceMono because we use it in HomeScreen.js. Feel free
           // to remove this if you are not using it in your app
-          { 'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf') },
+          //{ 'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf') },
         ]),
       ]);
     } catch (e) {
@@ -64,10 +65,10 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#ffffff'
   },
   statusBarUnderlay: {
     height: 24,
-    backgroundColor: '#6ccdcf',
+    backgroundColor: '#53bcf3'
   },
 });
