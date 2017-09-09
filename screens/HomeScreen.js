@@ -1,11 +1,11 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, StyleSheet, View, Image } from 'react-native';
 import { Container, Header, Title, Content, Footer, Button, Left, Right, Body, Icon, Text, Item, Input, Thumbnail, List, ListItem, Drawer } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { responsiveHeight, responsiveWidth, responsiveFontSize } from 'react-native-responsive-dimensions';
+import DrawerBar from '../components/DrawerBar';
 
 export default class HomeScreen extends React.Component {
-
   state = {
     ticker: [],
     global: {
@@ -15,89 +15,33 @@ export default class HomeScreen extends React.Component {
     tickerShow: [],
   }
 
-  componentDidMount() {
-    setInterval(() => this.fetchglobal(), 60000)
-    setInterval(() => this.fetchTicker(50), 20000)
-  }
-
-  componentWillMount() {
-    this.fetchglobal()
-    this.fetchTicker(10)
-  }
-
-  fetchglobal = () => {
-    console.log('fetchglobal');
-    return fetch('https://api.coinmarketcap.com/v1/global/?convert=THB')
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({
-          global: responseJson
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  fetchTicker = (limit) => {
-    console.log('fetchTicker : ' + limit);
-    return fetch('https://api.coinmarketcap.com/v1/ticker/?convert=THB&limit=' + limit)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({
-          ticker: responseJson
-        }, function () {
-          this.updateTickerShow();
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  updateTickerShow = (inputText = '') => {
-    let filtered = [];
-
-    if (inputText == '') {
-      this.setState({ tickerShow: this.state.ticker });
-    }
-    else {
-      for (var i = 0; i < (this.state.ticker).length; i++) {
-        if ((this.state.ticker[i].symbol).includes(inputText.toUpperCase())) {
-          filtered.push(this.state.ticker[i]);
-        }
-      }
-      this.setState({ tickerShow: filtered });
-    }
-  };
-
-  closeDrawer = () => {
-    this.drawer._root.close()
-  };
-
-  openDrawer = () => {
-    this.drawer._root.open()
-  };
-
   render() {
     return (
       <Container>
-
-        <Header style={{ backgroundColor: '#53bcf3', height: responsiveHeight(7) }}>
-          <Left>
-            <Button transparent>
-              <Icon name='menu' style={{ fontSize: responsiveFontSize(3), color: '#ffffff' }} onPress={() => this.openDrawer()} />
-            </Button>
-          </Left>
-          <Body>
-            <Title style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', color: '#ffffff' }}>THBCrypto - Market Capitalizations</Title>
-          </Body>
-        </Header>
-        <Drawer ref={(ref) => { this.drawer = ref; }}
-          content={
-            <Container style={{ flex: 1, backgroundColor: '#ffffff' }}>
-
-            </Container>}
+        <View style={{ backgroundColor: '#53bcf3' }}>
+          <Image
+            style={{
+              resizeMode: Image.resizeMode.stretch,
+              height: responsiveHeight(7),
+              width: responsiveWidth(100),
+              position: 'absolute'
+            }}
+            source={require('../assets/images/fadedBar.png')}
+          />
+          <Header style={{ backgroundColor: 'transparent', height: responsiveHeight(7) }}>
+            <Left>
+              <Button transparent>
+                <Icon name='menu' style={{ fontSize: responsiveFontSize(3), color: '#ffffff' }} onPress={() => this.openDrawer()} />
+              </Button>
+            </Left>
+            <Body>
+              <Title style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', color: '#ffffff' }}>THBCrypto - Market Capitalizations</Title>
+            </Body>
+          </Header>
+        </View>
+        <Drawer
+          ref={(ref) => { this.drawer = ref; }}
+          content={<DrawerBar />}
           onClose={() => this.closeDrawer()} >
           <Grid>
 
@@ -321,6 +265,71 @@ export default class HomeScreen extends React.Component {
       // </View>*/
     );
   }
+
+  componentDidMount() {
+    setInterval(() => this.fetchglobal(), 60000)
+    setInterval(() => this.fetchTicker(10), 20000)
+  }
+
+  componentWillMount() {
+    this.fetchglobal()
+    this.fetchTicker(5)
+  }
+
+  fetchglobal = () => {
+    console.log('fetchglobal');
+    return fetch('https://api.coinmarketcap.com/v1/global/?convert=THB')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          global: responseJson
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  fetchTicker = (limit) => {
+    console.log('fetchTicker : ' + limit);
+    return fetch('https://api.coinmarketcap.com/v1/ticker/?convert=THB&limit=' + limit)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          ticker: responseJson
+        }, function () {
+          this.updateTickerShow();
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  updateTickerShow = (inputText = '') => {
+    let filtered = [];
+
+    if (inputText == '') {
+      this.setState({ tickerShow: this.state.ticker });
+    }
+    else {
+      for (var i = 0; i < (this.state.ticker).length; i++) {
+        if ((this.state.ticker[i].symbol).includes(inputText.toUpperCase())) {
+          filtered.push(this.state.ticker[i]);
+        }
+      }
+      this.setState({ tickerShow: filtered });
+    }
+  };
+
+  closeDrawer = () => {
+    this.drawer._root.close()
+  };
+
+  openDrawer = () => {
+    this.drawer._root.open()
+  };
+
 
   /*_maybeRenderDevelopmentModeWarning() {
     if (__DEV__) {
