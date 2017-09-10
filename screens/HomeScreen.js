@@ -1,8 +1,9 @@
 import React from 'react';
-import { ScrollView, RefreshControl, StyleSheet, View, Image } from 'react-native';
+import { ScrollView, RefreshControl, StyleSheet, View, Image, FlatList } from 'react-native';
 import { Container, Header, Title, Content, Footer, Button, Left, Right, Body, Icon, Text, Item, Input, Thumbnail, List, ListItem, Drawer } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { responsiveHeight, responsiveWidth, responsiveFontSize } from 'react-native-responsive-dimensions';
+
 import DrawerBar from '../components/DrawerBar';
 
 export default class HomeScreen extends React.Component {
@@ -14,7 +15,7 @@ export default class HomeScreen extends React.Component {
     },
     tickerShow: [],
     refreshing: false,
-    searchInput:''
+    searchInput: ''
   }
 
   render() {
@@ -77,8 +78,8 @@ export default class HomeScreen extends React.Component {
                 <Icon name="ios-search" style={{ fontSize: responsiveFontSize(2), color: '#ababab' }} />
                 <Input placeholder="Search" style={{ fontSize: responsiveFontSize(1.8) }}
                   onChangeText={(text) => {
-                    this.setState({searchInput:text})
-                    this.updateTickerShow(text);
+                    this.updateTickerShow(text)
+                    this.setState({ searchInput: text })
                   }
                   } />
                 <Icon name="ios-trending-up" style={{ fontSize: responsiveFontSize(2), color: '#ababab' }} />
@@ -90,55 +91,62 @@ export default class HomeScreen extends React.Component {
 
             <Row>
               <Content>
-                <ScrollView>
-                  <List
-                    dataArray={this.state.tickerShow}
-                    refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh.bind(this)} />}
-                    renderRow={(data) =>
-                      <ListItem avatar style={{ padding: 0 }}>
-                        <Left>
-                          <Thumbnail square style={{ width: responsiveWidth(10), height: responsiveWidth(10) }} source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/64x64/' + data.id + '.png' }} />
-                        </Left>
-                        <Body>
-                          <Grid>
-                            <Row>
-                              <Text style={{ fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>{data.symbol}</Text>
-                              {
-                                data.percent_change_24h < 0 ? (
-                                  <Col><Text style={{ color: '#d7484c', fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>▼</Text></Col>
+                <ScrollView  refreshControl={
+                    <RefreshControl
+                      refreshing={this.state.refreshing}
+                      onRefresh={this._onRefresh.bind(this)}
+                    />
+                  }>
+                  <List>
+                    <FlatList
+                      data={this.state.tickerShow}
+                      keyExtractor={item => item.rank}
+                      renderItem={({ item }) => (
+                        <ListItem avatar style={{ padding: 0 }}>
+                          <Left>
+                            <Thumbnail square style={{ width: responsiveWidth(10), height: responsiveWidth(10) }} source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/64x64/' + item.id + '.png' }} />
+                          </Left>
+                          <Body>
+                            <Grid>
+                              <Row>
+                                <Text style={{ fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>{item.symbol}</Text>
+                                {
+                                  item.percent_change_24h < 0 ? (
+                                    <Col><Text style={{ color: '#d7484c', fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>▼</Text></Col>
+                                  ) : (
+                                      <Col><Text style={{ color: '#7fe2ae', fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>▲</Text></Col>
+                                    )
+                                }
+                              </Row>
+                            </Grid>
+                            <Text note style={{ fontSize: responsiveFontSize(1.5) }}>{item.name}</Text>
+                          </Body>
+                          <Right>
+                            <Text style={{ fontSize: responsiveFontSize(2), fontWeight: 'bold', color: '#ababab' }}>{parseFloat(item.price_thb).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ฿'}</Text>
+                            <Text note style={{ fontSize: responsiveFontSize(1.5) }}>{parseFloat(item.price_usd).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' $'}</Text>
+                          </Right>
+                          <Right>
+                            {
+                              item.percent_change_24h < 0 ?
+                                (
+                                  <Button style={{ backgroundColor: '#d7484c', height: responsiveHeight(5) }}>
+                                    <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', textAlign: 'center', width: responsiveWidth(14) }}>
+                                      {parseFloat(item.percent_change_24h).toFixed(2).replace("-", "") + '%'}
+                                    </Text>
+                                  </Button>
                                 ) : (
-                                    <Col><Text style={{ color: '#7fe2ae', fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>▲</Text></Col>
-                                  )
-                              }
-                            </Row>
-                          </Grid>
-                          <Text note style={{ fontSize: responsiveFontSize(1.5) }}>{data.name}</Text>
-                        </Body>
-                        <Right>
-                          <Text style={{ fontSize: responsiveFontSize(2), fontWeight: 'bold', color: '#ababab' }}>{parseFloat(data.price_thb).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ฿'}</Text>
-                          <Text note style={{ fontSize: responsiveFontSize(1.5) }}>{parseFloat(data.price_usd).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' $'}</Text>
-                        </Right>
-                        <Right>
-                          {
-                            data.percent_change_24h < 0 ?
-                              (
-                                <Button style={{ backgroundColor: '#d7484c', height: responsiveHeight(5) }}>
-                                  <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', textAlign: 'center', width: responsiveWidth(14) }}>
-                                    {parseFloat(data.percent_change_24h).toFixed(2).replace("-", "") + '%'}
-                                  </Text>
-                                </Button>
-                              ) : (
-                                <Button style={{ backgroundColor: '#7fe2ae', height: responsiveHeight(5) }}>
-                                  <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', textAlign: 'center', width: responsiveWidth(14) }}>
-                                    {parseFloat(data.percent_change_24h).toFixed(2) + '%'}
-                                  </Text>
-                                </Button>
-                              )
-                          }
-                        </Right>
-                      </ListItem>
-                    }
-                  />
+                                  <Button style={{ backgroundColor: '#7fe2ae', height: responsiveHeight(5) }}>
+                                    <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', textAlign: 'center', width: responsiveWidth(14) }}>
+                                      {parseFloat(item.percent_change_24h).toFixed(2) + '%'}
+                                    </Text>
+                                  </Button>
+                                )
+                            }
+                          </Right>
+                        </ListItem>
+                      )}
+                    />
+                  </List>
                 </ScrollView>
               </Content>
             </Row>
@@ -161,124 +169,15 @@ export default class HomeScreen extends React.Component {
 
         </Drawer>
       </Container>
-
-
-
-
-      /*<View>
-      <Header
-        backgroundColor='#6ccdcf'
-        leftComponent={{ icon: 'menu', color: '#ffffff' }}
-        centerComponent={{ text: 'THBCrypto', style: { color: '#ffffff' } }}
-      />
-
-      <Card containerStyle={{ marginTop: 85 }}>
-
-      </Card>
-
-      <Card containerStyle={{ padding: 0 }}>
-        <SearchBar containerStyle={{ backgroundColor: '#ffffff' }}
-          lightTheme
-          round
-          placeholder='Search Symbol...' />
-        <ScrollView>
-          {
-            users.map((u, i) => {
-              return (
-                <ListItem
-                  key={i}
-                  roundAvatar
-                  title={u.name}
-                  avatar={{ uri: u.avatar }}
-                />
-              );
-            })
-          }
-        </ScrollView>
-      </Card>
-
-
-      <Button
-        large raised
-        icon={{ name: 'envira', type: 'font-awesome' }}
-        title='LARGE WITH RIGHT ICON' />
-
-
-
-    </View>*/
-
-
-      /*   <View style={styles.container}>
-      //   <ScrollView
-      //     style={styles.container}
-      //     contentContainerStyle={styles.contentContainer}>
-      //     <View style={styles.welcomeContainer}>
-      //       <Image
-      //         source={
-      //           __DEV__
-      //             ? require('../assets/images/app-icon.png')
-      //             : require('../assets/images/app-icon.png')
-      //         }
-      //         style={styles.welcomeImage}
-      //       />
-      //     </View>
-
-      //     <View style={styles.getStartedContainer}>
-      //       {this._maybeRenderDevelopmentModeWarning()}
-
-      //       <Text style={styles.getStartedText}>Get started by opening</Text>
-
-      //       <View
-      //         style={[
-      //           styles.codeHighlightContainer,
-      //           styles.homeScreenFilename,
-      //         ]}>
-      //         <MonoText style={styles.codeHighlightText}>
-      //           screens/HomeScreen.js
-      //         </MonoText>
-      //       </View>
-
-      //       <Text style={styles.getStartedText}>
-      //         Change this text and your app will automatically reload.
-      //       </Text>
-      //     </View>
-
-      //     <View style={styles.helpContainer}>
-      //       <TouchableOpacity
-      //         onPress={this._handleHelpPress}
-      //         style={styles.helpLink}>
-      //         <Text style={styles.helpLinkText}>
-      //           Help, it didn’t automatically reload!
-      //         </Text>
-      //       </TouchableOpacity>
-      //     </View>
-      //   </ScrollView>
-
-      //   <View style={styles.tabBarInfoContainer}>
-      //     <Text style={styles.tabBarInfoText}>
-      //       This is a tab bar. You can edit it in:
-      //     </Text>
-
-      //     <View
-      //       style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-      //       <MonoText style={styles.codeHighlightText}>
-      //         navigation/MainTabNavigator.js
-      //       </MonoText>
-      //     </View>
-      //   </View>
-      // </View>*/
     );
   }
 
   componentDidMount() {
-    this.timer = setInterval(() => this.fetchglobal(), 60000)
-    this.timer = setInterval(() => this.fetchTicker(0), 20000)
-  }
-
-  componentWillMount() {
     this.fetchglobal()
-    this.fetchTicker(0)
-    this.updateTickerShow();
+    this.fetchTicker(100)
+    this.updateTickerShow()
+    setInterval(() => this.fetchglobal(), 60000)
+    setInterval(() => this.fetchTicker(100), 30000)
   }
 
   fetchglobal = () => {
@@ -315,23 +214,22 @@ export default class HomeScreen extends React.Component {
     let filtered = [];
 
     if (inputText == '') {
-      this.setState({ tickerShow: this.state.ticker });
+      this.setState({ tickerShow: this.state.ticker }, () => {
+        this.setState({ refreshing: false });
+      });
     } else {
-      for (var i = 0; i < (this.state.ticker).length; i++) {
-        if ((this.state.ticker[i].symbol).includes(inputText.toUpperCase())) {
-          filtered.push(this.state.ticker[i]);
-        }
-      }
-      this.setState({ tickerShow: filtered });
+      filtered = this.state.ticker.filter(function (el) {
+        return (el.symbol.includes(inputText.toUpperCase()));
+      });
+      this.setState({ tickerShow: filtered }, () => {
+        this.setState({ refreshing: false });
+      });
     }
   };
 
   _onRefresh = () => {
-    this.setState({ refreshing: true });
-    this.fetchTicker(100).then(() => {
-      this.setState({ refreshing: false });
-    });
-  }
+    this.setState({ refreshing: true }, () => { this.fetchTicker(100); });
+  };
 
 
   closeDrawer = () => {
@@ -341,129 +239,4 @@ export default class HomeScreen extends React.Component {
   openDrawer = () => {
     this.drawer._root.open()
   };
-
-
-  /*_maybeRenderDevelopmentModeWarning() {
-    if (__DEV__) {
-      const learnMoreButton = (
-        <Text onPress={this._handleLearnMorePress} style={styles.helpLinkText}>
-          Learn more
-        </Text>
-      );
-
-      return (
-        <Text style={styles.developmentModeText}>
-          Development mode is enabled, your app will be slower but you can use
-          useful development tools. {learnMoreButton}
-        </Text>
-      );
-    } else {
-      return (
-        <Text style={styles.developmentModeText}>
-          You are not in development mode, your app will run at full speed.
-        </Text>
-      );
-    }
-  }*/
-
-  /*_handleLearnMorePress = () => {
-    WebBrowser.openBrowserAsync(
-      'https://docs.expo.io/versions/latest/guides/development-mode'
-    );
-  };
-
-  _handleHelpPress = () => {
-    WebBrowser.openBrowserAsync(
-      'https://docs.expo.io/versions/latest/guides/up-and-running.html#can-t-see-your-changes'
-    );
-  };*/
 }
-
-/*const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: 'center',
-  },
-  contentContainer: {
-    paddingTop: 30,
-  },
-  welcomeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10,
-  },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-  },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
-  },
-  codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  tabBarInfoContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
-  },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: '#2e78b7',
-  },
-});*/
