@@ -1,254 +1,102 @@
-import React from "react";
-import {
-  ScrollView,
-  RefreshControl,
-  StyleSheet,
-  View,
-  Image,
-  FlatList
-} from "react-native";
-import {
-  Container,
-  Header,
-  Title,
-  Content,
-  Footer,
-  Button,
-  Left,
-  Right,
-  Body,
-  Icon,
-  Text,
-  Item,
-  Input,
-  Thumbnail,
-  List,
-  ListItem,
-  Drawer
-} from "native-base";
-import { Col, Row, Grid } from "react-native-easy-grid";
-import {
-  responsiveHeight,
-  responsiveWidth,
-  responsiveFontSize
-} from "react-native-responsive-dimensions";
+import React from 'react';
+import { ScrollView, RefreshControl, StyleSheet, View, Image, FlatList } from 'react-native';
+import { Container, Header, Title, Content, Footer, Button, Left, Right, Body, Icon, Text, Item, Input, Thumbnail, List, ListItem, Drawer } from 'native-base';
+import { Col, Row, Grid } from 'react-native-easy-grid';
+import { responsiveHeight, responsiveWidth, responsiveFontSize } from 'react-native-responsive-dimensions';
 
-import DrawerBar from "../components/DrawerBar";
+import DrawerBar from '../components/DrawerBar';
 
 export default class HomeScreen extends React.Component {
   state = {
     ticker: [],
     global: {
-      total_market_cap_thb: 0,
-      total_24h_volume_thb: 0
+      "total_market_cap_thb": 0,
+      "total_24h_volume_thb": 0
     },
     tickerShow: [],
     refreshing: false,
-    searchInput: ""
-  };
+    searchInput: ''
+  }
 
   render() {
     return (
       <Container>
-        <View style={{ backgroundColor: "#53bcf3" }}>
+        <View style={{ backgroundColor: '#53bcf3' }}>
           <Image
             style={{
               resizeMode: Image.resizeMode.stretch,
               height: responsiveHeight(7),
               width: responsiveWidth(100),
-              position: "absolute"
+              position: 'absolute'
             }}
-            source={require("../assets/images/fadedBar.png")}
+            source={require('../assets/images/fadedBar.png')}
           />
-          <Header
-            style={{
-              backgroundColor: "transparent",
-              height: responsiveHeight(7)
-            }}
-          >
+          <Header style={{ backgroundColor: 'transparent', height: responsiveHeight(7) }}>
             <Left>
               <Button transparent>
-                <Icon
-                  name="menu"
-                  style={{ fontSize: responsiveFontSize(3), color: "#ffffff" }}
-                  onPress={() => this.openDrawer()}
-                />
+                <Icon name='menu' style={{ fontSize: responsiveFontSize(3), color: '#ffffff' }} onPress={() => this.openDrawer()} />
               </Button>
             </Left>
             <Body>
-              <Title
-                style={{
-                  fontSize: responsiveFontSize(1.8),
-                  fontWeight: "bold",
-                  color: "#ffffff"
-                }}
-              >
-                THBCrypto - Market Capitalizations
-              </Title>
+              <Title style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', color: '#ffffff' }}>THBCrypto - Market Capitalizations</Title>
             </Body>
           </Header>
         </View>
         <Drawer
-          ref={ref => {
-            this.drawer = ref;
-          }}
+          ref={(ref) => { this.drawer = ref; }}
           content={<DrawerBar />}
           side="left"
           panCloseMask={0.2}
-          onClose={() => this.closeDrawer()}
-        >
+          onClose={() => this.closeDrawer()} >
           <Grid>
-            <Row
-              style={{
-                backgroundColor: "#ffffff",
-                paddingVertical: responsiveHeight(1),
-                height: responsiveHeight(6),
-                paddingLeft: responsiveWidth(3),
-                paddingRight: responsiveWidth(3)
-              }}
-            >
+
+            <Row style={{ backgroundColor: '#ffffff', paddingVertical: responsiveHeight(1), height: responsiveHeight(6), paddingLeft: responsiveWidth(3), paddingRight: responsiveWidth(3) }}>
               <Col>
-                <Text
-                  style={{
-                    fontSize: responsiveFontSize(1.8),
-                    textAlign: "left"
-                  }}
-                >
-                  Market Cap
-                </Text>
-                <Text
-                  style={{
-                    fontSize: responsiveFontSize(1.5),
-                    textAlign: "left",
-                    fontWeight: "bold"
-                  }}
-                  note
-                >
-                  {parseFloat(this.state.global.total_market_cap_thb)
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " ฿"}
-                </Text>
+                <Text style={{ fontSize: responsiveFontSize(1.8), textAlign: 'left' }}>Market Cap</Text>
+                <Text style={{ fontSize: responsiveFontSize(1.5), textAlign: 'left', fontWeight: 'bold' }} note>{parseFloat(this.state.global.total_market_cap_thb).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ฿'}</Text>
               </Col>
               <Col>
-                <Text
-                  style={{
-                    fontSize: responsiveFontSize(1.8),
-                    textAlign: "right"
-                  }}
-                >
-                  24h Volume
-                </Text>
-                <Text
-                  style={{
-                    fontSize: responsiveFontSize(1.5),
-                    textAlign: "right",
-                    fontWeight: "bold"
-                  }}
-                  note
-                >
-                  {parseFloat(this.state.global.total_24h_volume_thb)
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " ฿"}
-                </Text>
+                <Text style={{ fontSize: responsiveFontSize(1.8), textAlign: 'right' }}>24h Volume</Text>
+                <Text style={{ fontSize: responsiveFontSize(1.5), textAlign: 'right', fontWeight: 'bold' }} note>{parseFloat(this.state.global.total_24h_volume_thb).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ฿'}</Text>
               </Col>
             </Row>
 
-            <Row
-              style={{
-                backgroundColor: "#ffffff",
-                paddingVertical: responsiveHeight(1),
-                height: responsiveHeight(5)
-              }}
-            >
+            <Row style={{ backgroundColor: '#ffffff', paddingVertical: responsiveHeight(1), height: responsiveHeight(5) }}>
               <Col style={{ width: responsiveWidth(10) }}>
-                <Icon
-                  name="md-globe"
-                  style={{
-                    fontSize: responsiveFontSize(2),
-                    color: "#ababab",
-                    paddingLeft: responsiveWidth(3)
-                  }}
-                />
+                <Icon name='md-globe' style={{ fontSize: responsiveFontSize(2), color: '#ababab', paddingLeft: responsiveWidth(3) }} />
               </Col>
               <Col>
-                <Text
-                  style={{
-                    fontSize: responsiveFontSize(1.8),
-                    color: "#53bcf3",
-                    fontWeight: "bold",
-                    textAlign: "left"
-                  }}
-                >
-                  Southeast Asia
-                </Text>
+                <Text style={{ fontSize: responsiveFontSize(1.8), color: '#53bcf3', fontWeight: 'bold', textAlign: 'left' }}>Southeast Asia</Text>
               </Col>
               <Col>
-                <Text
-                  style={{
-                    fontSize: responsiveFontSize(1.8),
-                    color: "#53bcf3",
-                    fontWeight: "bold",
-                    textAlign: "right",
-                    paddingRight: responsiveWidth(3)
-                  }}
-                >
-                  Thailand
-                </Text>
+                <Text style={{ fontSize: responsiveFontSize(1.8), color: '#53bcf3', fontWeight: 'bold', textAlign: 'right', paddingRight: responsiveWidth(3) }}>Thailand</Text>
               </Col>
             </Row>
 
-            <Header
-              noShadow
-              searchBar
-              rounded
-              style={{
-                paddingLeft: responsiveWidth(1),
-                borderColor: "#ffffff",
-                backgroundColor: "#ffffff",
-                height: responsiveHeight(6),
-                marginTop: responsiveHeight(-1.2)
-              }}
-            >
+            <Header noShadow searchBar rounded style={{ paddingLeft: responsiveWidth(1), borderColor: '#ffffff', backgroundColor: '#ffffff', height: responsiveHeight(6), marginTop: responsiveHeight(-1.2) }}>
               <Item>
-                <Icon
-                  name="ios-search"
-                  style={{ fontSize: responsiveFontSize(2), color: "#ababab" }}
-                />
-                <Input
-                  placeholder="Search"
-                  style={{ fontSize: responsiveFontSize(1.8) }}
-                  onChangeText={text => {
-                    this.updateTickerShow(text);
-                    this.setState({ searchInput: text });
-                  }}
-                />
-                <Icon
-                  name="ios-trending-up"
-                  style={{ fontSize: responsiveFontSize(2), color: "#ababab" }}
-                />
+                <Icon name="ios-search" style={{ fontSize: responsiveFontSize(2), color: '#ababab' }} />
+                <Input placeholder="Search" style={{ fontSize: responsiveFontSize(1.8) }}
+                  onChangeText={(text) => {
+                    this.updateTickerShow(text)
+                    this.setState({ searchInput: text })
+                  }
+                  } />
+                <Icon name="ios-trending-up" style={{ fontSize: responsiveFontSize(2), color: '#ababab' }} />
               </Item>
               <Button transparent>
-                <Text
-                  style={{
-                    fontSize: responsiveFontSize(1.8),
-                    color: "#53bcf3"
-                  }}
-                >
-                  Search
-                </Text>
+                <Text style={{ fontSize: responsiveFontSize(1.8), color: '#53bcf3' }}>Search</Text>
               </Button>
             </Header>
 
             <Row>
               <Content>
-                <ScrollView
-                  refreshControl={
+                <ScrollView  refreshControl={
                     <RefreshControl
                       refreshing={this.state.refreshing}
                       onRefresh={this._onRefresh.bind(this)}
                     />
-                  }
-                >
+                  }>
                   <List>
                     <FlatList
                       data={this.state.tickerShow}
@@ -256,128 +104,44 @@ export default class HomeScreen extends React.Component {
                       renderItem={({ item }) => (
                         <ListItem avatar style={{ padding: 0 }}>
                           <Left>
-                            <Thumbnail
-                              square
-                              style={{
-                                width: responsiveWidth(10),
-                                height: responsiveWidth(10)
-                              }}
-                              source={{
-                                uri:
-                                  "https://files.coinmarketcap.com/static/img/coins/64x64/" +
-                                  item.id +
-                                  ".png"
-                              }}
-                            />
+                            <Thumbnail square style={{ width: responsiveWidth(10), height: responsiveWidth(10) }} source={{ uri: 'https://files.coinmarketcap.com/static/img/coins/64x64/' + item.id + '.png' }} />
                           </Left>
                           <Body>
                             <Grid>
                               <Row>
-                                <Text
-                                  style={{
-                                    fontSize: responsiveFontSize(2),
-                                    fontWeight: "bold"
-                                  }}
-                                >
-                                  {item.symbol}
-                                </Text>
-                                {item.percent_change_24h < 0 ? (
-                                  <Col>
-                                    <Text
-                                      style={{
-                                        color: "#d7484c",
-                                        fontSize: responsiveFontSize(2),
-                                        fontWeight: "bold"
-                                      }}
-                                    >
-                                      ▼
-                                    </Text>
-                                  </Col>
-                                ) : (
-                                  <Col>
-                                    <Text
-                                      style={{
-                                        color: "#7fe2ae",
-                                        fontSize: responsiveFontSize(2),
-                                        fontWeight: "bold"
-                                      }}
-                                    >
-                                      ▲
-                                    </Text>
-                                  </Col>
-                                )}
+                                <Text style={{ fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>{item.symbol}</Text>
+                                {
+                                  item.percent_change_24h < 0 ? (
+                                    <Col><Text style={{ color: '#d7484c', fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>▼</Text></Col>
+                                  ) : (
+                                      <Col><Text style={{ color: '#7fe2ae', fontSize: responsiveFontSize(2), fontWeight: 'bold' }}>▲</Text></Col>
+                                    )
+                                }
                               </Row>
                             </Grid>
-                            <Text
-                              note
-                              style={{ fontSize: responsiveFontSize(1.5) }}
-                            >
-                              {item.name}
-                            </Text>
+                            <Text note style={{ fontSize: responsiveFontSize(1.5) }}>{item.name}</Text>
                           </Body>
                           <Right>
-                            <Text
-                              style={{
-                                fontSize: responsiveFontSize(2),
-                                fontWeight: "bold",
-                                color: "#ababab"
-                              }}
-                            >
-                              {parseFloat(item.price_thb)
-                                .toFixed(2)
-                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " ฿"}
-                            </Text>
-                            <Text
-                              note
-                              style={{ fontSize: responsiveFontSize(1.5) }}
-                            >
-                              {parseFloat(item.price_usd)
-                                .toFixed(2)
-                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " $"}
-                            </Text>
+                            <Text style={{ fontSize: responsiveFontSize(2), fontWeight: 'bold', color: '#ababab' }}>{parseFloat(item.price_thb).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' ฿'}</Text>
+                            <Text note style={{ fontSize: responsiveFontSize(1.5) }}>{parseFloat(item.price_usd).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' $'}</Text>
                           </Right>
                           <Right>
-                            {item.percent_change_24h < 0 ? (
-                              <Button
-                                style={{
-                                  backgroundColor: "#d7484c",
-                                  height: responsiveHeight(5)
-                                }}
-                              >
-                                <Text
-                                  style={{
-                                    fontSize: responsiveFontSize(1.8),
-                                    fontWeight: "bold",
-                                    textAlign: "center",
-                                    width: responsiveWidth(14)
-                                  }}
-                                >
-                                  {parseFloat(item.percent_change_24h)
-                                    .toFixed(2)
-                                    .replace("-", "") + "%"}
-                                </Text>
-                              </Button>
-                            ) : (
-                              <Button
-                                style={{
-                                  backgroundColor: "#7fe2ae",
-                                  height: responsiveHeight(5)
-                                }}
-                              >
-                                <Text
-                                  style={{
-                                    fontSize: responsiveFontSize(1.8),
-                                    fontWeight: "bold",
-                                    textAlign: "center",
-                                    width: responsiveWidth(14)
-                                  }}
-                                >
-                                  {parseFloat(item.percent_change_24h).toFixed(
-                                    2
-                                  ) + "%"}
-                                </Text>
-                              </Button>
-                            )}
+                            {
+                              item.percent_change_24h < 0 ?
+                                (
+                                  <Button style={{ backgroundColor: '#d7484c', height: responsiveHeight(5) }}>
+                                    <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', textAlign: 'center', width: responsiveWidth(14) }}>
+                                      {parseFloat(item.percent_change_24h).toFixed(2).replace("-", "") + '%'}
+                                    </Text>
+                                  </Button>
+                                ) : (
+                                  <Button style={{ backgroundColor: '#7fe2ae', height: responsiveHeight(5) }}>
+                                    <Text style={{ fontSize: responsiveFontSize(1.8), fontWeight: 'bold', textAlign: 'center', width: responsiveWidth(14) }}>
+                                      {parseFloat(item.percent_change_24h).toFixed(2) + '%'}
+                                    </Text>
+                                  </Button>
+                                )
+                            }
                           </Right>
                         </ListItem>
                       )}
@@ -388,114 +152,74 @@ export default class HomeScreen extends React.Component {
             </Row>
           </Grid>
 
-          <Footer
-            style={{
-              backgroundColor: "#ffffff",
-              height: responsiveHeight(10),
-              paddingHorizontal: responsiveWidth(3),
-              paddingVertical: responsiveHeight(1.5)
-            }}
-          >
+          <Footer style={{ backgroundColor: '#ffffff', height: responsiveHeight(10), paddingHorizontal: responsiveWidth(3), paddingVertical: responsiveHeight(1.5) }}>
             <Grid>
               <Col>
-                <Button
-                  bordered
-                  style={{ alignSelf: "center", borderColor: "#53bcf3" }}
-                >
-                  <Text
-                    style={{
-                      width: responsiveWidth(36),
-                      color: "#53bcf3",
-                      fontSize: responsiveFontSize(1.8),
-                      fontWeight: "bold",
-                      textAlign: "center"
-                    }}
-                  >
-                    Sell
-                  </Text>
+                <Button bordered style={{ alignSelf: 'center', borderColor: '#53bcf3' }}>
+                  <Text style={{ width: responsiveWidth(36), color: '#53bcf3', fontSize: responsiveFontSize(1.8), fontWeight: 'bold', textAlign: 'center' }}>Sell</Text>
                 </Button>
               </Col>
               <Col>
-                <Button
-                  style={{
-                    alignSelf: "center",
-                    borderColor: "#53bcf3",
-                    backgroundColor: "#53bcf3"
-                  }}
-                >
-                  <Text
-                    style={{
-                      width: responsiveWidth(36),
-                      fontSize: responsiveFontSize(1.8),
-                      fontWeight: "bold",
-                      color: "#ffffff",
-                      textAlign: "center"
-                    }}
-                  >
-                    Buy
-                  </Text>
+                <Button style={{ alignSelf: 'center', borderColor: '#53bcf3', backgroundColor: '#53bcf3' }}>
+                  <Text style={{ width: responsiveWidth(36), fontSize: responsiveFontSize(1.8), fontWeight: 'bold', color: '#ffffff', textAlign: 'center' }}>Buy</Text>
                 </Button>
               </Col>
             </Grid>
           </Footer>
+
         </Drawer>
       </Container>
     );
   }
 
   componentDidMount() {
-    this.fetchglobal();
-    this.fetchTicker(100);
-    this.updateTickerShow();
-    setInterval(() => this.fetchglobal(), 60000);
-    setInterval(() => this.fetchTicker(100), 30000);
+    this.fetchglobal()
+    this.fetchTicker(100)
+    this.updateTickerShow()
+    setInterval(() => this.fetchglobal(), 60000)
+    setInterval(() => this.fetchTicker(100), 30000)
   }
 
   fetchglobal = () => {
-    console.log("fetchglobal");
-    return fetch("https://api.coinmarketcap.com/v1/global/?convert=THB")
-      .then(response => response.json())
-      .then(responseJson => {
+    console.log('fetchglobal');
+    return fetch('https://api.coinmarketcap.com/v1/global/?convert=THB')
+      .then((response) => response.json())
+      .then((responseJson) => {
         this.setState({
           global: responseJson
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   };
 
-  fetchTicker = limit => {
-    console.log("fetchTicker : " + limit);
-    return fetch(
-      "https://api.coinmarketcap.com/v1/ticker/?convert=THB&limit=" + limit
-    )
-      .then(response => response.json())
-      .then(responseJson => {
-        this.setState(
-          {
-            ticker: responseJson
-          },
-          function() {
-            this.updateTickerShow(this.state.searchInput);
-          }
-        );
+  fetchTicker = (limit) => {
+    console.log('fetchTicker : ' + limit);
+    return fetch('https://api.coinmarketcap.com/v1/ticker/?convert=THB&limit=' + limit)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({
+          ticker: responseJson
+        }, function () {
+          this.updateTickerShow(this.state.searchInput);
+        });
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   };
 
-  updateTickerShow = (inputText = "") => {
+  updateTickerShow = (inputText = '') => {
     let filtered = [];
 
-    if (inputText == "") {
+    if (inputText == '') {
       this.setState({ tickerShow: this.state.ticker }, () => {
         this.setState({ refreshing: false });
       });
     } else {
-      filtered = this.state.ticker.filter(function(el) {
-        return el.symbol.includes(inputText.toUpperCase());
+      filtered = this.state.ticker.filter(function (el) {
+        return (el.symbol.includes(inputText.toUpperCase()));
       });
       this.setState({ tickerShow: filtered }, () => {
         this.setState({ refreshing: false });
@@ -504,16 +228,15 @@ export default class HomeScreen extends React.Component {
   };
 
   _onRefresh = () => {
-    this.setState({ refreshing: true }, () => {
-      this.fetchTicker(100);
-    });
+    this.setState({ refreshing: true }, () => { this.fetchTicker(100); });
   };
 
+
   closeDrawer = () => {
-    this.drawer._root.close();
+    this.drawer._root.close()
   };
 
   openDrawer = () => {
-    this.drawer._root.open();
+    this.drawer._root.open()
   };
 }
