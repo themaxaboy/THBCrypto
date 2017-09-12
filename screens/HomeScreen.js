@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  ScrollView,
-  RefreshControl,
-  StyleSheet,
-  View,
-  Image,
-  FlatList
-} from "react-native";
+import { ScrollView, StyleSheet, View, Image, FlatList } from "react-native";
 import {
   Container,
   Header,
@@ -33,7 +26,7 @@ import {
   responsiveFontSize
 } from "react-native-responsive-dimensions";
 
-import DrawerBar from "../components/DrawerBar";
+import DrawerBar from "../navigation/DrawerBar";
 
 export default class HomeScreen extends React.Component {
   state = {
@@ -67,11 +60,10 @@ export default class HomeScreen extends React.Component {
             }}
           >
             <Left>
-              <Button transparent>
+              <Button transparent onPress={() => this.openDrawer()}>
                 <Icon
                   name="menu"
                   style={{ fontSize: responsiveFontSize(3), color: "#ffffff" }}
-                  onPress={() => this.openDrawer()}
                 />
               </Button>
             </Left>
@@ -94,8 +86,10 @@ export default class HomeScreen extends React.Component {
           }}
           content={<DrawerBar />}
           side="left"
-          panCloseMask={0.2}
-          onClose={() => this.closeDrawer()}
+          panOpenMask={0.8}
+          captureGestures="open"
+          onClose={this.closeDrawer.bind(this)}
+          onOpen={this.openDrawer.bind(this)}
         >
           <Grid>
             <Row
@@ -218,9 +212,10 @@ export default class HomeScreen extends React.Component {
                   placeholder="Search"
                   style={{ fontSize: responsiveFontSize(1.8) }}
                   onChangeText={text => {
-                    this.updateTickerShow(text);
                     this.setState({ searchInput: text });
+                    this.updateTickerShow(text);
                   }}
+                  value={this.state.searchInput}
                 />
                 <Icon
                   name="ios-trending-up"
@@ -241,14 +236,7 @@ export default class HomeScreen extends React.Component {
 
             <Row>
               <Content>
-                <ScrollView
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={this.state.refreshing}
-                      onRefresh={this._onRefresh.bind(this)}
-                    />
-                  }
-                >
+                <ScrollView>
                   <List>
                     <FlatList
                       data={this.state.tickerShow}
@@ -444,14 +432,15 @@ export default class HomeScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchglobal();
-    this.fetchTicker(100);
+    this.fetchGlobal();
+    this.fetchTicker(5);
     this.updateTickerShow();
-    setInterval(() => this.fetchglobal(), 60000);
-    setInterval(() => this.fetchTicker(100), 30000);
+
+    this.timer = setInterval(() => this.fetchGlobal(), 60000);
+    this.timer = setInterval(() => this.fetchTicker(10), 60000);
   }
 
-  fetchglobal = () => {
+  fetchGlobal = () => {
     console.log("fetchglobal");
     return fetch("https://api.coinmarketcap.com/v1/global/?convert=THB")
       .then(response => response.json())
@@ -489,23 +478,19 @@ export default class HomeScreen extends React.Component {
   updateTickerShow = (inputText = "") => {
     let filtered = [];
 
-    if (inputText == "") {
-      this.setState({ tickerShow: this.state.ticker }, () => {
-        this.setState({ refreshing: false });
-      });
-    } else {
+    if (inputText != "") {
       filtered = this.state.ticker.filter(function(el) {
         return el.symbol.includes(inputText.toUpperCase());
       });
-      this.setState({ tickerShow: filtered }, () => {
-        this.setState({ refreshing: false });
-      });
+      this.setState({ tickerShow: filtered });
+    } else {
+      this.setState({ tickerShow: this.state.ticker });
     }
   };
 
   _onRefresh = () => {
     this.setState({ refreshing: true }, () => {
-      this.fetchTicker(100);
+      this.fetchTicker(0);
     });
   };
 
