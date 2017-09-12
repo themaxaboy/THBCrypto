@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "description": "Hello Expo!",
   "author": "Max Veerapat Kumchom",
-  "license": "",
+  "licenses": [
+  ],
+  "repository": {
+  },
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "test": "node ./node_modules/jest/bin/jest.js --watch"
