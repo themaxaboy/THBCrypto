@@ -1,5 +1,12 @@
 import React from "react";
-import { ScrollView, StyleSheet, View, Image, FlatList } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  Image,
+  FlatList,
+  RefreshControl
+} from "react-native";
 import {
   Container,
   Header,
@@ -35,12 +42,24 @@ export default class HomeScreen extends React.Component {
       total_market_cap_thb: 0,
       total_24h_volume_thb: 0
     },
-    tickerShow: [],
     refreshing: false,
-    searchInput: ""
+    searchInput: "",
+    toggledDrawer: false
   };
 
   render() {
+    let filteredSymbol =
+      this.state.searchInput != ""
+        ? this.state.ticker.filter(ticker => {
+            return (
+              ticker.symbol.includes(this.state.searchInput.toUpperCase()) ||
+              ticker.name
+                .toUpperCase()
+                .includes(this.state.searchInput.toUpperCase())
+            );
+          })
+        : this.state.ticker;
+
     return (
       <Container>
         <View style={{ backgroundColor: "#53bcf3" }}>
@@ -60,7 +79,7 @@ export default class HomeScreen extends React.Component {
             }}
           >
             <Left>
-              <Button transparent onPress={() => this.openDrawer()}>
+              <Button transparent onPress={() => this.toggleDrawer()}>
                 <Icon
                   name="menu"
                   style={{ fontSize: responsiveFontSize(3), color: "#ffffff" }}
@@ -213,7 +232,6 @@ export default class HomeScreen extends React.Component {
                   style={{ fontSize: responsiveFontSize(1.8) }}
                   onChangeText={text => {
                     this.setState({ searchInput: text });
-                    this.updateTickerShow(text);
                   }}
                   value={this.state.searchInput}
                 />
@@ -236,10 +254,17 @@ export default class HomeScreen extends React.Component {
 
             <Row>
               <Content>
-                <ScrollView>
+                <ScrollView
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={this.state.refreshing}
+                      onRefresh={this._onRefresh.bind(this)}
+                    />
+                  }
+                >
                   <List>
                     <FlatList
-                      data={this.state.tickerShow}
+                      data={filteredSymbol.slice(0, 50)}
                       keyExtractor={item => item.rank}
                       renderItem={({ item }) => (
                         <ListItem avatar style={{ padding: 0 }}>
@@ -433,11 +458,10 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     this.fetchGlobal();
-    this.fetchTicker(5);
-    this.updateTickerShow();
+    this.fetchTicker(0);
 
     this.timer = setInterval(() => this.fetchGlobal(), 60000);
-    this.timer = setInterval(() => this.fetchTicker(10), 60000);
+    this.timer = setInterval(() => this.fetchTicker(0), 60000);
   }
 
   fetchGlobal = () => {
@@ -461,44 +485,35 @@ export default class HomeScreen extends React.Component {
     )
       .then(response => response.json())
       .then(responseJson => {
-        this.setState(
-          {
-            ticker: responseJson
-          },
-          function() {
-            this.updateTickerShow(this.state.searchInput);
-          }
-        );
+        this.setState({
+          ticker: responseJson
+        });
       })
       .catch(error => {
         console.error(error);
       });
   };
 
-  updateTickerShow = (inputText = "") => {
-    let filtered = [];
-
-    if (inputText != "") {
-      filtered = this.state.ticker.filter(function(el) {
-        return el.symbol.includes(inputText.toUpperCase());
-      });
-      this.setState({ tickerShow: filtered });
-    } else {
-      this.setState({ tickerShow: this.state.ticker });
-    }
+  _onRefresh = () => {
+    this.setState({ refreshing: true });
+    this.fetchTicker(0).then(() => {
+      this.setState({ refreshing: false });
+    });
   };
 
-  _onRefresh = () => {
-    this.setState({ refreshing: true }, () => {
-      this.fetchTicker(0);
-    });
+  toggleDrawer = () => {
+    this.state.toggledDrawer
+      ? this.drawer._root.close()
+      : this.drawer._root.open();
   };
 
   closeDrawer = () => {
     this.drawer._root.close();
+    this.setState({ toggledDrawer: false });
   };
 
   openDrawer = () => {
     this.drawer._root.open();
+    this.setState({ toggledDrawer: true });
   };
 }

@@ -12,6 +12,7 @@ import {
   responsiveWidth,
   responsiveFontSize
 } from "react-native-responsive-dimensions";
+import { StackNavigator } from "react-navigation";
 
 export default class HomeScreen extends React.Component {
   render() {
@@ -34,7 +35,7 @@ export default class HomeScreen extends React.Component {
                 paddingHorizontal: responsiveWidth(2)
               }}
             />
-            <Text>My Port</Text>
+            <Text style={{ fontSize: responsiveFontSize(1.5) }}>My Port</Text>
           </ListItem>
           <ListItem>
             <Icon
@@ -44,7 +45,7 @@ export default class HomeScreen extends React.Component {
                 paddingHorizontal: responsiveWidth(2)
               }}
             />
-            <Text>Alerts</Text>
+            <Text style={{ fontSize: responsiveFontSize(1.5) }}>Alerts</Text>
           </ListItem>
           <ListItem last>
             <Icon
@@ -54,7 +55,9 @@ export default class HomeScreen extends React.Component {
                 paddingHorizontal: responsiveWidth(2)
               }}
             />
-            <Text>My Favorite</Text>
+            <Text style={{ fontSize: responsiveFontSize(1.5) }}>
+              My Favorite
+            </Text>
           </ListItem>
 
           <Separator bordered>
@@ -73,7 +76,9 @@ export default class HomeScreen extends React.Component {
                 paddingHorizontal: responsiveWidth(2)
               }}
             />
-            <Text>Market Capitalizations</Text>
+            <Text style={{ fontSize: responsiveFontSize(1.5) }}>
+              Market Capitalizations
+            </Text>
           </ListItem>
           <ListItem last>
             <Icon
@@ -83,7 +88,9 @@ export default class HomeScreen extends React.Component {
                 paddingHorizontal: responsiveWidth(2)
               }}
             />
-            <Text>Top Gainers / Losers</Text>
+            <Text style={{ fontSize: responsiveFontSize(1.5) }}>
+              Top Gainers / Losers
+            </Text>
           </ListItem>
 
           <Separator bordered>
@@ -102,7 +109,9 @@ export default class HomeScreen extends React.Component {
                 paddingHorizontal: responsiveWidth(2)
               }}
             />
-            <Text>Currency Converter</Text>
+            <Text style={{ fontSize: responsiveFontSize(1.5) }}>
+              Currency Converter
+            </Text>
           </ListItem>
 
           <Separator bordered>
@@ -121,7 +130,7 @@ export default class HomeScreen extends React.Component {
                 paddingHorizontal: responsiveWidth(2)
               }}
             />
-            <Text>Settings</Text>
+            <Text style={{ fontSize: responsiveFontSize(1.5) }}>Settings</Text>
           </ListItem>
           <ListItem>
             <Icon
@@ -131,7 +140,7 @@ export default class HomeScreen extends React.Component {
                 paddingHorizontal: responsiveWidth(2)
               }}
             />
-            <Text>Rate Us</Text>
+            <Text style={{ fontSize: responsiveFontSize(1.5) }}>Rate Us</Text>
           </ListItem>
           <ListItem>
             <Icon
@@ -141,7 +150,9 @@ export default class HomeScreen extends React.Component {
                 paddingHorizontal: responsiveWidth(2)
               }}
             />
-            <Text>Invite Friends</Text>
+            <Text style={{ fontSize: responsiveFontSize(1.5) }}>
+              Invite Friends
+            </Text>
           </ListItem>
           <ListItem>
             <Icon
@@ -151,7 +162,9 @@ export default class HomeScreen extends React.Component {
                 paddingHorizontal: responsiveWidth(2)
               }}
             />
-            <Text>Send Feedback</Text>
+            <Text style={{ fontSize: responsiveFontSize(1.5) }}>
+              Send Feedback
+            </Text>
           </ListItem>
           <ListItem last>
             <Icon
@@ -161,7 +174,7 @@ export default class HomeScreen extends React.Component {
                 paddingHorizontal: responsiveWidth(2)
               }}
             />
-            <Text>Exit</Text>
+            <Text style={{ fontSize: responsiveFontSize(1.5) }}>Exit</Text>
           </ListItem>
         </Content>
       </Container>
