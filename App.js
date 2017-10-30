@@ -5,6 +5,8 @@ import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./screens/HomeScreen";
 import RootNavigation from "./navigation/RootNavigation";
 
+/*test commit*/
+
 export default class App extends React.Component {
   state = {
     assetsAreLoaded: false
