@@ -4,7 +4,7 @@
     "description": "Data real time cryptocurrency in Thai Baht.",
     "slug": "thbcrypto",
     "privacy": "public",
-    "sdkVersion": "20.0.0",
+    "sdkVersion": "30.0.0",
     "version": "1.0.0",
     "orientation": "portrait",
     "primaryColor": "#282c34",
@@ -18,7 +18,9 @@
       "hideExponentText": false
     },
     "packagerOpts": {
-      "assetExts": ["ttf"]
+      "assetExts": [
+        "ttf"
+      ]
     },
     "ios": {
       "supportsTablet": true

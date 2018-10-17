@@ -4,27 +4,30 @@
   "description": "Hello Expo!",
   "author": "Max Veerapat Kumchom",
   "license": "Apache-2.0",
-  "repository": {
-  },
+  "repository": {},
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "test": "node ./node_modules/jest/bin/jest.js --watch"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "eject": "expo eject",
+    "test": "node ./node_modules/jest/bin/jest.js --watchAll"
   },
   "jest": {
     "preset": "jest-expo"
   },
   "dependencies": {
     "@expo/samples": "2.1.1",
-    "@expo/vector-icons": "^5.2.0",
-    "expo": "^22.0.0",
-    "native-base": "^2.3.1",
-    "react": "16.0.0-beta.5",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-22.0.1.tar.gz",
-    "react-navigation": "^1.0.0-beta.15",
-    "react-native-easy-grid": "^0.1.15",
-    "react-native-responsive-dimensions": "^1.0.1"
+    "@expo/vector-icons": "^8.0.0",
+    "expo": "^30.0.1",
+    "native-base": "^2.8.1",
+    "react": "16.5.2",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
+    "react-native-easy-grid": "^0.2.0",
+    "react-native-responsive-dimensions": "^2.0.1",
+    "react-navigation": "^2.18.0"
   },
   "devDependencies": {
-    "jest-expo": "^20.0.0"
+    "jest-expo": "^30.0.0"
   }
 }
